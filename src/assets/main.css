@@ -1,11 +1,11 @@
 @import "./base.css";
 
-
-html, body {
+html,
+body {
     margin: 0px;
     padding: 0px;
     background-color: var(--background-bg);
-    color: var(--global-text-color)
+    color: var(--global-text-color);
 }
 
 @media (min-width: 1024px) {
