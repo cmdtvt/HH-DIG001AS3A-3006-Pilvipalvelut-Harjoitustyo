@@ -1,5 +1,15 @@
 <script setup lang="ts"></script>
 
-<template></template>
+<template>
+    <section class="section surface">
+        <h1>Tervetuloa TelkkuTutkaan</h1>
+        <p>Telkkututka on Suomalainen palvelu jossa voit pitää kirjaa katsomistasi telkkariohjelmista ja pysyä ajantasalla uusista julkaisuista.</p>
+    </section>
+
+    <section class="section">
+        <h2>Uudet sarjat</h2>
+        
+    </section>
+</template>
 
 <style lang="css" scoped></style>
