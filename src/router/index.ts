@@ -24,6 +24,11 @@ const router = createRouter({
             component: ViewShows,
         },
         {
+            path: "/list",
+            name: "List",
+            component: ViewShows,
+        },
+        {
             path: "/profile",
             name: "profile",
             component: ViewProfile,
