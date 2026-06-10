@@ -1,24 +1,19 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { DataTable, Column, InputText } from "primevue";
+import type { User } from "@/types/User";
 
-interface User {
-    id: number;
-    username: string;
-    email: string;
-    role: string;
-}
 
 
 const users = ref<User[]>([
     {
-        id: 1,
-        username: "TeppoTesti",
-        email: "TeppoTesti@example.com",
+        id: "",
+        username: "teppo testi",
+        email: "teppo.testi@example.com",
         role: "Admin",
+        profileId: "0"
     },
 ]);
-
 
 /*We can return this to datatable so we can filter content directly from the table*/
 const search = ref("");
@@ -44,12 +39,7 @@ const filtered = computed(() => {
             <InputText v-model="search" placeholder="Search users..." />
         </div>
 
-        <DataTable
-            :value="filtered"
-            paginator
-            :rows="25"
-            responsiveLayout="scroll"
-        >
+        <DataTable :value="filtered" paginator :rows="25" responsiveLayout="scroll">
             <Column field="id" header="ID" sortable />
             <Column field="username" header="Username" sortable />
             <Column field="email" header="Email" sortable />
