@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase/firestore";
+
 export interface UserProfile {
     id: string;
     userId: string;
@@ -9,6 +11,6 @@ export interface UserProfile {
 
     isProfilePublic: boolean;
 
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }

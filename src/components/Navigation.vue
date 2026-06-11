@@ -7,6 +7,7 @@
         <nav class="nav-links">
             <RouterLink to="/">Koti</RouterLink>
             <RouterLink to="/Profile">Profiili</RouterLink>
+            <RouterLink to="/Register">Register</RouterLink>
             <!-- <RouterLink to="/List">List</RouterLink> -->
             <RouterLink to="/Browse">Selaa</RouterLink>
             <RouterLink to="/Admin">Admin</RouterLink>

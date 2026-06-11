@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase/firestore";
+
 // This is the users version of certain movie / show
 export interface UserMedia {
     id: string;
@@ -11,5 +13,5 @@ export interface UserMedia {
     watchedEpisodes?: number;
 
     notes?: string;
-    updatedAt: Date;
+    updatedAt: Timestamp;
 }

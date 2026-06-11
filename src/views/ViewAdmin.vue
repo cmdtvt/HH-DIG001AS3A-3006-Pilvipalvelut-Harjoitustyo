@@ -1,19 +1,15 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { DataTable, Column, InputText } from "primevue";
 import type { User } from "@/types/User";
+import { serviceUser } from "@/services/serviceUser";
 
+const users = ref<User[]>([]);
 
-
-const users = ref<User[]>([
-    {
-        id: "",
-        username: "teppo testi",
-        email: "teppo.testi@example.com",
-        role: "Admin",
-        profileId: "0"
-    },
-]);
+// We need to do this in onMounted ebcause we use async in the serviceUser class
+onMounted(async () => {
+    users.value = await serviceUser.getAll();
+});
 
 /*We can return this to datatable so we can filter content directly from the table*/
 const search = ref("");
@@ -35,7 +31,7 @@ const filtered = computed(() => {
     <section class="section surface">
         <div class="flex row between align-center gap-md section-header">
             <h2>Käyttäjät</h2>
-
+            {{ users }}
             <InputText v-model="search" placeholder="Search users..." />
         </div>
 
@@ -54,11 +50,5 @@ const filtered = computed(() => {
 </template>
 
 <style scoped>
-.section-header {
-    margin-bottom: 1rem;
-}
 
-h2 {
-    margin: 0;
-}
 </style>

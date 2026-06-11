@@ -3,6 +3,7 @@ import ViewLanding from "@/views/ViewLanding.vue";
 import ViewLogin from "@/views/ViewLogin.vue";
 import ViewProfile from "@/views/ViewProfile.vue";
 import ViewShows from "@/views/ViewShows.vue";
+import ViewRegister from "@/views/ViewRegister.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -17,6 +18,11 @@ const router = createRouter({
             path: "/login",
             name: "login",
             component: ViewLogin,
+        },
+        {
+            path: "/register",
+            name: "register",
+            component: ViewRegister,
         },
         {
             path: "/browse",

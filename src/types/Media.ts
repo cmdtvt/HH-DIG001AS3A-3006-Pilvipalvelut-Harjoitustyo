@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase/firestore";
+
 export interface Media {
     id: string;
 
@@ -10,6 +12,6 @@ export interface Media {
 
     posterImageId?: string; //Instance of image type
 
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Timestamp;
+    updatedAt: Timestamp;
 }
