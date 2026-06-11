@@ -25,6 +25,11 @@ const router = createRouter({
             component: ViewRegister,
         },
         {
+            path: "/login",
+            name: "login",
+            component: ViewLogin,
+        },
+        {
             path: "/browse",
             name: "browse",
             component: ViewShows,

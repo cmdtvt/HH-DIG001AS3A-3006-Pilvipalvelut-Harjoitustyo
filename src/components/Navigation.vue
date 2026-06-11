@@ -1,10 +1,20 @@
 <script setup lang="ts">
+import { Button } from "primevue";
+import router from "@/router";
 import { hasAuth } from "@/services/hasAuth";
+import { signOut } from "firebase/auth";
+import { auth } from "@/services/firebase";
+
 const { user } = hasAuth();
 
-function handleLogout() {
-    console.log("logout");
-}
+const handleLogout = async () => {
+    try {
+        await signOut(auth);
+        await router.push("/");
+    } catch (error) {
+        alert("error");
+    }
+};
 </script>
 
 <template>
@@ -17,9 +27,9 @@ function handleLogout() {
             <RouterLink to="/AiringToday">Ohjelma</RouterLink>
 
             <RouterLink v-if="user" :to="`/profile/${user.uid}`">Profiili</RouterLink>
-            <RouterLink v-if="user" to="/logout">Kirjaudu ulos</RouterLink>
+            <Button v-if="user" @click="handleLogout">Kirjaudu ulos</Button>
 
-            <RouterLink v-if="!user" to="/Register">Kirjaudu tai rekisteröidy</RouterLink>
+            <RouterLink v-if="!user" to="/login">Kirjaudu tai rekisteröidy</RouterLink>
             <RouterLink to="/Admin">Admin</RouterLink>
         </nav>
     </div>
