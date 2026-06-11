@@ -31,7 +31,6 @@ const filtered = computed(() => {
     <section class="section surface">
         <div class="flex row between align-center gap-md section-header">
             <h2>Käyttäjät</h2>
-            {{ users }}
             <InputText v-model="search" placeholder="Search users..." />
         </div>
 
@@ -49,6 +48,4 @@ const filtered = computed(() => {
     <section class="section surface"></section>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

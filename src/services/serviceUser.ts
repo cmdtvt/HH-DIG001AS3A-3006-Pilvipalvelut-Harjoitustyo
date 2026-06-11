@@ -2,7 +2,15 @@ import { auth, db } from "@/services/firebase";
 import type { RegisterUser, User } from "@/types/User";
 import type { UserProfile } from "@/types/UserProfile";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, doc, getDocs, serverTimestamp, setDoc, Timestamp } from "firebase/firestore";
+import {
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    serverTimestamp,
+    setDoc,
+    Timestamp,
+} from "firebase/firestore";
 
 export class ServiceUser {
     async getAll(): Promise<User[]> {
@@ -69,6 +77,23 @@ export class ServiceUser {
     }
 
     async delete() {
+        return null;
+    }
+
+    /*I dont really like this structure. Also handling the user's profile stuff here feels wrong*/
+
+    async getProfile(uid: string): Promise<UserProfile | null> {
+        const data = await getDoc(doc(db, "userProfiles", uid));
+
+        //TODO: Add better error returns here
+        if (!data.exists()) {
+            return null;
+        }
+
+        return data.data() as UserProfile;
+    }
+
+    async updateProfile(uid: string): Promise<UserProfile | null> {
         return null;
     }
 }
