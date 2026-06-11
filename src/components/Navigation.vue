@@ -1,4 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { hasAuth } from "@/services/hasAuth";
+const { user } = hasAuth();
+
+function handleLogout() {
+    console.log("logout");
+}
+</script>
 
 <template>
     <div class="wrapper">
@@ -6,12 +13,14 @@
 
         <nav class="nav-links">
             <RouterLink to="/">Koti</RouterLink>
-            <RouterLink to="/Profile">Profiili</RouterLink>
-            <RouterLink to="/Register">Register</RouterLink>
-            <!-- <RouterLink to="/List">List</RouterLink> -->
             <RouterLink to="/Browse">Selaa</RouterLink>
-            <RouterLink to="/Admin">Admin</RouterLink>
             <RouterLink to="/AiringToday">Ohjelma</RouterLink>
+
+            <RouterLink v-if="user" :to="`/profile/${user.uid}`">Profiili</RouterLink>
+            <RouterLink v-if="user" to="/logout">Kirjaudu ulos</RouterLink>
+
+            <RouterLink v-if="!user" to="/Register">Kirjaudu tai rekisteröidy</RouterLink>
+            <RouterLink to="/Admin">Admin</RouterLink>
         </nav>
     </div>
 </template>
