@@ -2,13 +2,16 @@
 import { ref } from "vue";
 import { InputText, Password, Button } from "primevue";
 import { serviceUser } from "@/services/serviceUser";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/services/firebase";
+import router from "@/router";
 
 const username = ref("");
 const email = ref("");
 const password = ref("");
 const confirmedPassword = ref("");
 
-const handleRegister = () => {
+const handleRegister = async () => {
     if (password.value == confirmedPassword.value) {
         serviceUser.register({
             username: username.value,
@@ -24,8 +27,20 @@ const handleRegister = () => {
 const loginEmail = ref("");
 const loginPassword = ref("");
 
-const handleLogin = () => {
-    alert("login");
+const handleLogin = async () => {
+    try {
+        const credential = await signInWithEmailAndPassword(
+            auth,
+            loginEmail.value,
+            loginPassword.value,
+        );
+
+        console.log("Logged in:", credential.user);
+
+        await router.push(`/profile/${credential.user.uid}`);
+    } catch (error) {
+        alert("invaluid password");
+    }
 };
 </script>
 
@@ -55,7 +70,7 @@ const handleLogin = () => {
                 />
             </div>
 
-            <Button type="submit" label="Kirjaudu" @click="handleLogin" />
+            <Button type="button" label="Kirjaudu" @click="handleLogin" />
         </form>
     </section>
 
@@ -95,7 +110,7 @@ const handleLogin = () => {
                 />
             </div>
 
-            <Button type="submit" label="Register" icon="pi pi-user-plus" @click="handleRegister" />
+            <Button type="button" label="Register" @click="handleRegister" />
         </form>
     </section>
 </template>
