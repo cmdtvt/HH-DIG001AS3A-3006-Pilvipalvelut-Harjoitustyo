@@ -7,6 +7,8 @@ import { serviceUser } from "@/services/serviceUser";
 import type { UserProfile } from "@/types/UserProfile";
 
 import { Textarea, InputText, Button } from "primevue";
+import { handle } from "@primeuix/themes/aura/imagecompare";
+import { serverTimestamp } from "firebase/firestore";
 
 const route = useRoute();
 const uid = route.params.uid as string;
@@ -22,6 +24,24 @@ onMounted(async () => {
     editProfileDisplayName.value = data.value?.displayName;
     editProfileBio.value = data.value?.bio;
 });
+
+const handleEditToggle = async () => {
+    if (editProfileAllow.value) {
+        const temp: Omit<UserProfile, 'createdAt' | 'updatedAt'> = {
+            id: "",
+            userId: "",
+            displayName: "",
+            favoriteGenres: [],
+            isProfilePublic: false,
+
+        }
+
+        serviceUser.updateProfile(temp)
+        alert("saving")
+    }
+
+    editProfileAllow.value = !editProfileAllow.value;
+};
 </script>
 
 <template>
@@ -31,7 +51,7 @@ onMounted(async () => {
         <Button
             :label="editProfileAllow ? 'Tallenna' : 'Muokkaa'"
             :severity="editProfileAllow ? 'primary' : 'secondary'"
-            @click="editProfileAllow = !editProfileAllow"
+            @click="handleEditToggle"
         />
     </section>
     <section class="section surface" v-if="!editProfileAllow">

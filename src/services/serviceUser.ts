@@ -93,7 +93,7 @@ export class ServiceUser {
         return data.data() as UserProfile;
     }
 
-    async updateProfile(uid: string): Promise<UserProfile | null> {
+    async updateProfile(data:Omit<UserProfile, 'createdAt' | 'updatedAt'>): Promise<UserProfile | null> {
         return null;
     }
 }
