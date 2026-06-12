@@ -23,14 +23,14 @@ const handleLogout = async () => {
 
         <nav class="nav-links">
             <RouterLink to="/">Koti</RouterLink>
-            <RouterLink to="/Browse">Selaa</RouterLink>
+            <RouterLink to="/browse">Selaa</RouterLink>
             <RouterLink to="/AiringToday">Ohjelma</RouterLink>
 
             <RouterLink v-if="user" :to="`/profile/${user.uid}`">Profiili</RouterLink>
             <Button v-if="user" @click="handleLogout">Kirjaudu ulos</Button>
 
             <RouterLink v-if="!user" to="/login">Kirjaudu tai rekisteröidy</RouterLink>
-            <RouterLink to="/Admin">Admin</RouterLink>
+            <RouterLink to="/admin">Admin</RouterLink>
         </nav>
     </div>
 </template>

@@ -1,8 +1,7 @@
 import type { Timestamp } from "firebase/firestore";
 
 export interface Media {
-
-    //TODO: Handling the 
+    
     // id: string;
 
     title: string;

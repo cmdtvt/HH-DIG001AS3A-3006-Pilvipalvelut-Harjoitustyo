@@ -6,13 +6,21 @@ import DisplayShow from "@/components/DisplayShow.vue";
 import { serviceUser } from "@/services/serviceUser";
 import type { UserProfile } from "@/types/UserProfile";
 
+import { Textarea, InputText, Button } from "primevue";
+
 const route = useRoute();
 const uid = route.params.uid as string;
+
+const editProfileAllow = ref(true);
+const editProfileDisplayName = ref<string | undefined>("");
+const editProfileBio = ref<string | undefined>("");
 
 const data = ref<UserProfile | null>(null);
 
 onMounted(async () => {
     data.value = await serviceUser.getProfile(uid);
+    editProfileDisplayName.value = data.value?.displayName;
+    editProfileBio.value = data.value?.bio;
 });
 </script>
 
@@ -20,10 +28,20 @@ onMounted(async () => {
     <section class="banner">
         <!-- <img src="https://placehold.co/150" class="profile-image" /> -->
         <img :src="data?.avatarImageId" class="profile-image" />
+        <Button
+            :label="editProfileAllow ? 'Tallenna' : 'Muokkaa'"
+            :severity="editProfileAllow ? 'primary' : 'secondary'"
+            @click="editProfileAllow = !editProfileAllow"
+        />
     </section>
-    <section class="section surface">
+    <section class="section surface" v-if="!editProfileAllow">
         <h3>{{ data?.displayName }}</h3>
         <p>{{ data?.bio }}</p>
+    </section>
+
+    <section class="section surface" v-if="editProfileAllow">
+        <InputText :value="editProfileDisplayName"></InputText>
+        <Textarea :value="editProfileBio"></Textarea>
     </section>
 
     <section class="section">
