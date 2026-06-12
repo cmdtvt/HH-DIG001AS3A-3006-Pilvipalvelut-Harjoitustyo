@@ -14,24 +14,19 @@ export class ServiceMedia {
         return null;
     }
 
-    async create(data: Media) {
-        console.log(data);
+    // Omit the not wanted fields in this allready so seeing the fields needed later
+    // In development is easier.
+    // TODO: Should consider implementing this everywhere.
+    async create(data: Omit<Media, "createdAt" | "updatedAt">) {
+        const mediaData = doc(collection(db, "media"));
 
-        const media: Omit<Media, "createdAt" | "updatedAt"> = {
-            id: "",
-            title: "",
-            description: "",
-            type: "Movie",
-            genres: [],
-        };
-
-        await setDoc(doc(db, "media"), {
-            ...media,
+        await setDoc(mediaData, {
+            ...data,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
         });
 
-        return media;
+        return mediaData.id;
     }
 }
 
