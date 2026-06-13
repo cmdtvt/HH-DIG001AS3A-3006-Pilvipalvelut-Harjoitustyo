@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Button } from "primevue";
 import type { Media } from "@/types/Media";
 import { computed } from "vue";
 import UserUpdateShow from "./UserUpdateShow.vue";

@@ -28,7 +28,6 @@ export class ServiceUserMedia {
     async save(data: Omit<UserMedia, "updatedAt">) {
         // This might be bad idea but documents should be easily findable
         const documentId = `${data.userId}_${data.mediaId}`;
-        console.log(documentId)
         await setDoc(
             doc(db, "userMedia", documentId),
             {

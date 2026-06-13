@@ -1,10 +1,9 @@
 import { db } from "@/services/firebase";
-import { collection, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 
 import type { Media } from "@/types/Media";
 
 export class ServiceMedia {
-
     async getAll(): Promise<Media[]> {
         const data = await getDocs(collection(db, "media"));
 
@@ -16,8 +15,17 @@ export class ServiceMedia {
         })) as Media[];
     }
 
-    async getById(): Promise<Media | null> {
-        return null;
+    async getById(id: string): Promise<Media | null> {
+        const data = await getDoc(doc(db, "media", id));
+
+        if (!data.exists()) {
+            return null;
+        }
+
+        return {
+            id: data.id,
+            ...data.data(),
+        } as Media;
     }
 
     // Omit the not wanted fields in this allready so seeing the fields needed later

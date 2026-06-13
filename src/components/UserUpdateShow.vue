@@ -12,21 +12,17 @@ const props = defineProps<{
     show: Media;
 }>();
 
-
 const visible = ref(false);
 const status = ref<"Suunnittelu" | "Katsomassa" | "Katsottu" | "Keskeytetty">("Suunnittelu");
 const rating = ref<number | undefined>(undefined);
 const watchedEpisodes = ref<number | null>(null);
 const notes = ref("");
-    
+
 const data = ref<UserMedia | null>();
 onMounted(async () => {
     if (!user.value) return;
 
-    data.value = await serviceUserMedia.getById(
-        user.value.uid,
-        props.show.id
-    );
+    data.value = await serviceUserMedia.getById(user.value.uid, props.show.id);
 
     if (!data.value) return;
 
@@ -54,7 +50,7 @@ const handleSave = async () => {
 </script>
 
 <template>
-    <Button severity="secondary" label="Lisää" @click="visible = true" />
+    <Button severity="secondary" label="Tiedot" @click="visible = true" />
 
     <Dialog v-model:visible="visible" modal :header="show.title" :style="{ width: '50rem' }">
         <div class="flex col gap-md">
@@ -103,7 +99,7 @@ const handleSave = async () => {
                         <Textarea v-model="notes" rows="4" />
                     </div>
 
-                   <div class="flex col gap-xs">
+                    <div class="flex col gap-xs">
                         <label>Arvosana</label>
 
                         <Rating v-model="rating" />

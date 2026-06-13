@@ -7,8 +7,9 @@ import { serviceUser } from "@/services/serviceUser";
 import type { UserProfile } from "@/types/UserProfile";
 
 import { Textarea, InputText, Button } from "primevue";
-import { handle } from "@primeuix/themes/aura/imagecompare";
-import { serverTimestamp } from "firebase/firestore";
+import { serviceUserMedia } from "@/services/serviceUserMedia";
+import { serviceMedia } from "@/services/serviceMedia";
+import type { Media } from "@/types/Media";
 
 const route = useRoute();
 const uid = route.params.uid as string;
@@ -53,6 +54,41 @@ const handleEditToggle = async () => {
 
     editProfileAllow.value = !editProfileAllow.value;
 };
+
+const planning = ref<Media[]>([]);
+const watching = ref<Media[]>([]);
+const completed = ref<Media[]>([]);
+const dropped = ref<Media[]>([]);
+
+const shows = ref<Media[]>([]);
+onMounted(async () => {
+    const all = await serviceUserMedia.getAll();
+
+    // Split the shows by their status
+    const ids_planning = all.filter((x) => x.status === "Suunnittelu");
+    const ids_watching = all.filter((x) => x.status === "Katsomassa");
+    const ids_completed = all.filter((x) => x.status === "Katsottu");
+    const ids_dropped = all.filter((x) => x.status === "Keskeytetty");
+
+    // Tyhse need to be ran in promise.all so we dont get multiple promise responses.
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all
+    // after that in filtering because null can be returned instead of Media well just check that
+    planning.value = (
+        await Promise.all(ids_planning.map((x) => serviceMedia.getById(x.mediaId)))
+    ).filter((m): m is Media => m !== null);
+
+    watching.value = (
+        await Promise.all(ids_watching.map((x) => serviceMedia.getById(x.mediaId)))
+    ).filter((m): m is Media => m !== null);
+
+    completed.value = (
+        await Promise.all(ids_completed.map((x) => serviceMedia.getById(x.mediaId)))
+    ).filter((m): m is Media => m !== null);
+
+    dropped.value = (
+        await Promise.all(ids_dropped.map((x) => serviceMedia.getById(x.mediaId)))
+    ).filter((m): m is Media => m !== null);
+});
 </script>
 
 <template>
@@ -80,29 +116,37 @@ const handleEditToggle = async () => {
         />
     </section>
 
-    <!-- <section class="section">
-        <h2>Lempisarjat</h2>
-        <div class="grid grid-auto">
-            <DisplayShow />
-            <DisplayShow />
-            <DisplayShow />
-            <DisplayShow />
-            <DisplayShow />
-            <DisplayShow />
+    <section class="section">
+        <h2>Katsomassa</h2>
+        <div class="grid grid-auto" v-if="watching.length > 0">
+            <DisplayShow v-for="item in watching" :show="item" />
         </div>
+        <p v-else>Ei sarjoja</p>
     </section>
 
     <section class="section">
-        <h2>Katsotut sarjat</h2>
-        <div class="grid grid-auto">
-            <DisplayShow />
-            <DisplayShow />
-            <DisplayShow />
-            <DisplayShow />
-            <DisplayShow />
-            <DisplayShow />
+        <h2>Katsottu</h2>
+        <div class="grid grid-auto" v-if="completed.length > 0">
+            <DisplayShow v-for="item in completed" :show="item" />
         </div>
-    </section> -->
+        <p v-else>Ei sarjoja</p>
+    </section>
+
+    <section class="section">
+        <h2>Suunnittelemassa</h2>
+        <div class="grid grid-auto" v-if="planning.length > 0">
+            <DisplayShow v-for="item in planning" :show="item" />
+        </div>
+        <p v-else>Ei sarjoja</p>
+    </section>
+
+    <section class="section">
+        <h2>Pudotettu</h2>
+        <div class="grid grid-auto" v-if="dropped.length > 0">
+            <DisplayShow v-for="item in dropped" :show="item" />
+        </div>
+        <p v-else>Ei sarjoja</p>
+    </section>
 </template>
 
 <style lang="css" scoped>
