@@ -24,7 +24,7 @@ const handleLogout = async () => {
         <nav class="nav-links">
             <RouterLink to="/">Koti</RouterLink>
             <RouterLink to="/browse">Selaa</RouterLink>
-            <RouterLink to="/AiringToday">Ohjelma</RouterLink>
+            <!-- <RouterLink to="/AiringToday">Ohjelma</RouterLink> -->
 
             <RouterLink v-if="user" :to="`/profile/${user.uid}`">Profiili</RouterLink>
             <Button v-if="user" @click="handleLogout">Kirjaudu ulos</Button>

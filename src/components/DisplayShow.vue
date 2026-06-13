@@ -2,6 +2,10 @@
 import { Button } from "primevue";
 import type { Media } from "@/types/Media";
 import { computed } from "vue";
+import UserUpdateShow from "./UserUpdateShow.vue";
+
+import { hasAuth } from "@/services/hasAuth.ts";
+const { user } = hasAuth();
 
 const props = defineProps<{
     show: Media;
@@ -23,12 +27,11 @@ const imageSrc = computed(() =>
                 {{ props.show.title }}
             </p>
 
-            <div v-if="props.show.type === 'TV'" class="overlay-episode">
-                {{ props.show.episodeCount ?? 0 }} Episodes
+            <div class="overlay-episode flex row between">
+                <p v-if="props.show.type === 'TV'">{{ props.show.episodeCount ?? 0 }} Jaksoa</p>
+                <UserUpdateShow :show="props.show" v-if="user"></UserUpdateShow>
             </div>
         </div>
-
-        <Button severity="secondary" label="Open" />
     </div>
 </template>
 

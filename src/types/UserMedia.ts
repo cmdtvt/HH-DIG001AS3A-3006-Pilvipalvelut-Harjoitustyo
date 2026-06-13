@@ -7,7 +7,7 @@ export interface UserMedia {
     userId: string;
     mediaId: string;
 
-    status: "Planning" | "Watching" | "Completed" | "Dropped";
+    status: "Suunnittelu" | "Katsomassa" | "Katsottu" | "Keskeytetty";
 
     rating?: number;
     watchedEpisodes?: number;
