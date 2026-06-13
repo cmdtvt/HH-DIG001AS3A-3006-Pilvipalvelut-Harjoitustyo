@@ -4,10 +4,16 @@ import { collection, doc, getDocs, serverTimestamp, setDoc } from "firebase/fire
 import type { Media } from "@/types/Media";
 
 export class ServiceMedia {
+
     async getAll(): Promise<Media[]> {
         const data = await getDocs(collection(db, "media"));
 
-        return data.docs.map((doc) => doc.data() as Media);
+        // I think this is way better. I need to id from firebase but by injecting it in at get phace
+        // We dont need to manage the storing seperaly or in two places
+        return data.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        })) as Media[];
     }
 
     async getById(): Promise<Media | null> {

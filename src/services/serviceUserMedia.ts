@@ -1,5 +1,5 @@
 import { db } from "@/services/firebase";
-import { collection, doc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
 
 // import type { Media } from "@/types/Media";
 import type { UserMedia } from "@/types/UserMedia";
@@ -12,10 +12,23 @@ export class ServiceUserMedia {
         return data.docs.map((doc) => doc.data() as UserMedia);
     }
 
+    async getById(userId: string, mediaId: string): Promise<UserMedia | null> {
+        const documentId = `${userId}_${mediaId}`;
+
+        const data = await getDoc(doc(db, "userMedia", documentId));
+
+        if (!data.exists()) {
+            return null;
+        }
+
+        return data.data() as UserMedia;
+    }
+
     // Passing merge true makes the document only update the passed fileds
     async save(data: Omit<UserMedia, "updatedAt">) {
         // This might be bad idea but documents should be easily findable
         const documentId = `${data.userId}_${data.mediaId}`;
+        console.log(documentId)
         await setDoc(
             doc(db, "userMedia", documentId),
             {

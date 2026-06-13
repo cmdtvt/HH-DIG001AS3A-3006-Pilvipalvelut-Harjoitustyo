@@ -1,26 +1,54 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { Button, Dialog, InputNumber, Select, Textarea, Rating } from "primevue";
 import type { Media } from "@/types/Media";
 import { serviceUserMedia } from "@/services/serviceUserMedia";
+import type { UserMedia } from "@/types/UserMedia";
+
+import { hasAuth } from "@/services/hasAuth";
+const { user } = hasAuth();
 
 const props = defineProps<{
     show: Media;
 }>();
 
-const visible = ref(false);
 
+const visible = ref(false);
 const status = ref<"Suunnittelu" | "Katsomassa" | "Katsottu" | "Keskeytetty">("Suunnittelu");
 const rating = ref<number | undefined>(undefined);
 const watchedEpisodes = ref<number | null>(null);
 const notes = ref("");
+    
+const data = ref<UserMedia | null>();
+onMounted(async () => {
+    if (!user.value) return;
+
+    data.value = await serviceUserMedia.getById(
+        user.value.uid,
+        props.show.id
+    );
+
+    if (!data.value) return;
+
+    status.value = data.value.status;
+    rating.value = data.value.rating;
+    watchedEpisodes.value = data.value.watchedEpisodes ?? null;
+    notes.value = data.value.notes ?? "";
+});
 
 const handleSave = async () => {
-    serviceUserMedia.save({
+    if (!user.value) return;
+
+    await serviceUserMedia.save({
+        id: `${user.value.uid}_${props.show.id}`,
+        userId: user.value.uid,
+        mediaId: props.show.id,
+
         status: status.value,
-        id: "",
-        userId: "",
-        mediaId: "10",
+
+        rating: rating.value,
+        watchedEpisodes: watchedEpisodes.value ?? undefined,
+        notes: notes.value || undefined,
     });
 };
 </script>
@@ -45,38 +73,41 @@ const handleSave = async () => {
                 </div>
             </section>
 
-            <section class="flex col">
+            <section>
                 <h3>Oma seuranta</h3>
 
-                <div class="field">
-                    <label>Status</label>
+                <div class="grid grid-2 gap-md">
+                    <div class="flex col gap-xs">
+                        <label>Status</label>
 
-                    <Select
-                        v-model="status"
-                        :options="['Suunnittelu', 'Katsomassa', 'Katsottu', 'Keskeytetty']"
-                    />
-                </div>
+                        <Select
+                            v-model="status"
+                            :options="['Suunnittelu', 'Katsomassa', 'Katsottu', 'Keskeytetty']"
+                        />
+                    </div>
 
-                <div class="field">
-                    <label>Arvosana</label>
-                    <Rating v-model="rating" />
-                </div>
+                    <div class="flex col gap-xs">
+                        <label>Katsottuja jaksoja</label>
 
-                <div v-if="show.type === 'TV'" class="field">
-                    <label>Katsottuja jaksoja</label>
+                        <InputNumber
+                            v-model="watchedEpisodes"
+                            :min="0"
+                            :max="show.episodeCount ?? 9999"
+                            showButtons
+                        />
+                    </div>
 
-                    <InputNumber
-                        v-model="watchedEpisodes"
-                        :min="0"
-                        :max="show.episodeCount ?? 9999"
-                        showButtons
-                    />
-                </div>
+                    <div class="flex col gap-xs">
+                        <label>Muistiinpanot</label>
 
-                <div class="field">
-                    <label>Muistiinpanot</label>
+                        <Textarea v-model="notes" rows="4" />
+                    </div>
 
-                    <Textarea v-model="notes" rows="4" />
+                   <div class="flex col gap-xs">
+                        <label>Arvosana</label>
+
+                        <Rating v-model="rating" />
+                    </div>
                 </div>
             </section>
         </div>
