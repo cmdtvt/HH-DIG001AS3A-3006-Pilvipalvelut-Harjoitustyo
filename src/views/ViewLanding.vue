@@ -13,14 +13,14 @@ import DisplayShow from "@/components/DisplayShow.vue";
 
     <section class="section">
         <h2>Uudet sarjat</h2>
-        <div class="grid grid-auto">
+        <!-- <div class="grid grid-auto">
             <DisplayShow />
             <DisplayShow />
             <DisplayShow />
             <DisplayShow />
             <DisplayShow />
             <DisplayShow />
-        </div>
+        </div> -->
     </section>
 </template>
 

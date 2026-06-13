@@ -1,33 +1,31 @@
 <script setup lang="ts">
 import { Button } from "primevue";
+import type { Media } from "@/types/Media";
+import { computed } from "vue";
 
-interface Props {
-    id: number;
-    title: string;
-    image: string;
-    currentEpisodes: number;
-    totalEpisodes: number;
-}
+const props = defineProps<{
+    show: Media;
+}>();
 
-const props = withDefaults(defineProps<Props>(), {
-    id: 0,
-    title: "Title not set",
-    image: "https://placehold.co/250",
-    currentEpisodes: 5,
-    totalEpisodes: 12,
-});
+//FIXME: this just does not work at all
+const fallbackImage = "https://placehold.co/250";
+const imageSrc = computed(() =>
+    props.show.posterImage?.trim() ? props.show.posterImage : fallbackImage,
+);
 </script>
 
 <template>
     <div class="CompDisplayShow">
         <div class="image-container">
-            <img :src="image" />
+            <img :src="imageSrc" alt="poster" />
 
             <p class="overlay-title">
-                {{ title }}
+                {{ props.show.title }}
             </p>
 
-            <div class="overlay-episode">{{ currentEpisodes }} / {{ totalEpisodes }} Episodes</div>
+            <div v-if="props.show.type === 'TV'" class="overlay-episode">
+                {{ props.show.episodeCount ?? 0 }} Episodes
+            </div>
         </div>
 
         <Button severity="secondary" label="Open" />
@@ -47,6 +45,8 @@ const props = withDefaults(defineProps<Props>(), {
 .image-container img {
     display: block;
     width: 100%;
+    max-height: 250px;
+    overflow-y: hidden;
 }
 
 .overlay-title {

@@ -93,8 +93,20 @@ export class ServiceUser {
         return data.data() as UserProfile;
     }
 
-    async updateProfile(data:Omit<UserProfile, 'createdAt' | 'updatedAt'>): Promise<UserProfile | null> {
-        return null;
+    async updateProfile(
+        data: Omit<UserProfile, "createdAt" | "updatedAt">,
+    ): Promise<UserProfile | null> {
+        // we could also use updateDoc but by using setDoc if the document is not found we automatically create it
+        // if something goes wrong in the user creation step which should initalize these documents this could work as a backup
+        // not sure if this has some tradeofss laters. One thing im worried is the possibilit of creating documents with no owner.
+        // and with merge true we dont repalce the whole document in firestore but we just update the passed fileds.
+        await setDoc(
+            doc(db, "userProfiles", data.id),
+            { ...data, updatedAt: serverTimestamp() },
+            { merge: true },
+        );
+
+        return await this.getProfile(data.id);
     }
 }
 

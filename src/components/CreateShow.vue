@@ -12,7 +12,7 @@ const description = ref("");
 const type = ref<"Movie" | "TV">("TV");
 const genres = ref("");
 const episodeCount = ref<number | null>(null);
-const posterImageId = ref("");
+const posterImage = ref("");
 
 const handleCreate = async () => {
     try {
@@ -21,14 +21,14 @@ const handleCreate = async () => {
             description: description.value,
             type: type.value,
 
-            // Whith filter(Boolen) we can check if item in split list has lenght larger htan 0
             genres: genres.value
                 .split(",")
                 .map((genre) => genre.trim())
                 .filter(Boolean),
 
-            episodeCount: type.value === "TV" ? (episodeCount.value ?? undefined) : undefined,
-            posterImageId: posterImageId.value || undefined,
+            ...(type.value === "TV" ? { episodeCount: episodeCount.value ?? 0 } : {}),
+
+            posterImage: posterImage.value,
         };
 
         serviceMedia.create(media);
@@ -38,7 +38,7 @@ const handleCreate = async () => {
         type.value = "TV";
         genres.value = "";
         episodeCount.value = null;
-        posterImageId.value = "";
+        posterImage.value = "";
 
         visible.value = false;
     } catch (error) {
@@ -53,7 +53,7 @@ const isValid = computed(() => {
         title.value.trim().length > 0 &&
         description.value.trim().length > 0 &&
         genres.value.trim().length > 0 &&
-        posterImageId.value.trim().length > 0 &&
+        posterImage.value.trim().length > 0 &&
         (type.value === "Movie" || (type.value === "TV" && episodeCount.value != null))
     );
 });
@@ -98,7 +98,7 @@ const isValid = computed(() => {
                 />
             </div>
 
-            <div v-if="type === 'TV'" class="flex col">
+            <div class="flex col">
                 <label>Jaksojen määrä*</label>
                 <InputNumber
                     v-model="episodeCount"
@@ -109,12 +109,8 @@ const isValid = computed(() => {
             </div>
 
             <div class="flex col">
-                <label>Poster Image Id*</label>
-                <InputText
-                    v-model="posterImageId"
-                    fluid
-                    :invalid="posterImageId.trim().length === 0"
-                />
+                <label>Poster Kuva*</label>
+                <InputText v-model="posterImage" fluid :invalid="posterImage.trim().length === 0" />
             </div>
         </div>
 

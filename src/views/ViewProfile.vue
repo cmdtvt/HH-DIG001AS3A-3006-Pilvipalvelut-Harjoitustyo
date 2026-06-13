@@ -13,7 +13,7 @@ import { serverTimestamp } from "firebase/firestore";
 const route = useRoute();
 const uid = route.params.uid as string;
 
-const editProfileAllow = ref(true);
+const editProfileAllow = ref(false);
 const editProfileDisplayName = ref<string | undefined>("");
 const editProfileBio = ref<string | undefined>("");
 
@@ -27,17 +27,28 @@ onMounted(async () => {
 
 const handleEditToggle = async () => {
     if (editProfileAllow.value) {
-        const temp: Omit<UserProfile, 'createdAt' | 'updatedAt'> = {
-            id: "",
-            userId: "",
-            displayName: "",
-            favoriteGenres: [],
-            isProfilePublic: false,
+        //typescript complains otherwise
+        if (!data.value) return;
 
-        }
+        const updatedProfile: Omit<UserProfile, "createdAt" | "updatedAt"> = {
+            id: data.value.id,
+            userId: data.value.userId,
 
-        serviceUser.updateProfile(temp)
-        alert("saving")
+            displayName: editProfileDisplayName.value ?? "",
+            bio: editProfileBio.value ?? data.value.bio,
+            avatarImageId: data.value.avatarImageId,
+            favoriteGenres: data.value.favoriteGenres,
+            isProfilePublic: data.value.isProfilePublic,
+        };
+
+        await serviceUser.updateProfile(updatedProfile);
+
+        //typescript causing trouble for reasining the variables os we need to make sure that data.value is not null
+        if (!data.value) return;
+        data.value.displayName = editProfileDisplayName.value ?? "";
+        data.value.bio = editProfileBio.value ?? "";
+
+        alert("saving");
     }
 
     editProfileAllow.value = !editProfileAllow.value;
@@ -48,23 +59,28 @@ const handleEditToggle = async () => {
     <section class="banner">
         <!-- <img src="https://placehold.co/150" class="profile-image" /> -->
         <img :src="data?.avatarImageId" class="profile-image" />
+    </section>
+    <section class="section surface">
+        <div>
+            <template v-if="!editProfileAllow">
+                <h3>{{ data?.displayName }}</h3>
+                <p>{{ data?.bio }}</p>
+            </template>
+
+            <template v-if="editProfileAllow">
+                <InputText v-model="editProfileDisplayName"></InputText><br />
+                <Textarea v-model="editProfileBio" rows="5"></Textarea>
+            </template>
+        </div>
+
         <Button
             :label="editProfileAllow ? 'Tallenna' : 'Muokkaa'"
             :severity="editProfileAllow ? 'primary' : 'secondary'"
             @click="handleEditToggle"
         />
     </section>
-    <section class="section surface" v-if="!editProfileAllow">
-        <h3>{{ data?.displayName }}</h3>
-        <p>{{ data?.bio }}</p>
-    </section>
 
-    <section class="section surface" v-if="editProfileAllow">
-        <InputText :value="editProfileDisplayName"></InputText>
-        <Textarea :value="editProfileBio"></Textarea>
-    </section>
-
-    <section class="section">
+    <!-- <section class="section">
         <h2>Lempisarjat</h2>
         <div class="grid grid-auto">
             <DisplayShow />
@@ -86,7 +102,7 @@ const handleEditToggle = async () => {
             <DisplayShow />
             <DisplayShow />
         </div>
-    </section>
+    </section> -->
 </template>
 
 <style lang="css" scoped>
@@ -104,5 +120,10 @@ const handleEditToggle = async () => {
 img {
     max-width: 150px;
     max-height: 150px;
+}
+
+Textarea {
+    margin-top: 25px;
+    width: 50%;
 }
 </style>
