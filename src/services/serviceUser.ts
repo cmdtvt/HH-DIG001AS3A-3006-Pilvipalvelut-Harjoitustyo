@@ -28,9 +28,6 @@ export class ServiceUser {
     }
 
     async register(data: RegisterUser) {
-        console.log("ServiceUser has recieved a register request");
-        console.log(data);
-
         // Creates new firebase account and it seems to auto login the user also.
         const credential = await createUserWithEmailAndPassword(auth, data.email, data.password);
 

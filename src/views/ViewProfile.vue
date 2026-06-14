@@ -11,19 +11,22 @@ import { serviceUserMedia } from "@/services/serviceUserMedia";
 import { serviceMedia } from "@/services/serviceMedia";
 import type { Media } from "@/types/Media";
 
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
+
 const route = useRoute();
 const uid = route.params.uid as string;
 
 const editProfileAllow = ref(false);
 const editProfileDisplayName = ref<string | undefined>("");
 const editProfileBio = ref<string | undefined>("");
-const editProfileAvatarImage = ref<string | undefined>("")
+const editProfileAvatarImage = ref<string | undefined>("");
 
 const data = ref<UserProfile | null>(null);
 
 onMounted(async () => {
     data.value = await serviceUser.getProfile(uid);
-    editProfileAvatarImage.value = data.value?.avatarImageId
+    editProfileAvatarImage.value = data.value?.avatarImageId;
     editProfileDisplayName.value = data.value?.displayName;
     editProfileBio.value = data.value?.bio;
 });
@@ -51,7 +54,12 @@ const handleEditToggle = async () => {
         data.value.displayName = editProfileDisplayName.value ?? "";
         data.value.bio = editProfileBio.value ?? "";
 
-        alert("saving");
+        toast.add({
+            severity: "success",
+            summary: "Onnistui",
+            detail: "Tallennettu",
+            life: 3000,
+        });
     }
 
     editProfileAllow.value = !editProfileAllow.value;
@@ -78,7 +86,6 @@ const handleChangeImage = async () => {
             loadingImage.value = false;
         };
         img.src = fox.image;
-
     } catch (error) {
         loadingImage.value = false;
     }
@@ -91,7 +98,7 @@ const completed = ref<Media[]>([]);
 const dropped = ref<Media[]>([]);
 
 onMounted(async () => {
-    const all = await serviceUserMedia.getAll();
+    const all = await serviceUserMedia.getByUserId(uid);
 
     // Split the shows by their status
     const ids_planning = all.filter((x) => x.status === "Suunnittelu");
@@ -123,9 +130,8 @@ onMounted(async () => {
 <template>
     <section class="banner">
         <div class="profile-image-wrapper">
-            <Skeleton v-if="loadingImage" shape="square" size="150px" class="profile-image"/>
+            <Skeleton v-if="loadingImage" shape="square" size="150px" class="profile-image" />
             <img v-else :src="editProfileAvatarImage" class="profile-image" />
-
         </div>
     </section>
     <section class="section surface">

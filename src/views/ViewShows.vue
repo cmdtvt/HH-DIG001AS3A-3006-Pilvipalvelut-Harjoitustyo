@@ -26,7 +26,7 @@ onMounted(async () => {
         <h2>Uudet sarjat</h2>
         <div class="grid grid-auto-centering">
             <DisplayShow v-for="item in data" :show="item" />
-            <ProgressSpinner v-if="loading"/>
+            <ProgressSpinner v-if="loading" />
         </div>
     </section>
 </template>

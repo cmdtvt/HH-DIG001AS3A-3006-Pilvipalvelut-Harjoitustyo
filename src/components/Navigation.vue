@@ -5,14 +5,29 @@ import { hasAuth } from "@/services/hasAuth";
 import { signOut } from "firebase/auth";
 import { auth } from "@/services/firebase";
 
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
+
 const { user } = hasAuth();
 
 const handleLogout = async () => {
     try {
         await signOut(auth);
         await router.push("/");
+
+        toast.add({
+            severity: "success",
+            summary: "Kirjauduit ulos",
+            detail: "Kiitos käynnistä",
+            life: 3000,
+        });
     } catch (error) {
-        alert("error");
+        toast.add({
+            severity: "err",
+            summary: "Epäonnistui",
+            detail: "Tapahtui virhe",
+            life: 3000,
+        });
     }
 };
 </script>
@@ -30,7 +45,7 @@ const handleLogout = async () => {
             <button v-if="user" @click="handleLogout">Kirjaudu ulos</button>
 
             <RouterLink v-if="!user" to="/login">Kirjaudu tai rekisteröidy</RouterLink>
-            <RouterLink to="/admin">Admin</RouterLink>
+            <!-- <RouterLink to="/admin">Admin</RouterLink> -->
         </nav>
     </div>
 </template>

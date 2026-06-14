@@ -1,5 +1,14 @@
 import { db } from "@/services/firebase";
-import { collection, doc, getDoc, getDocs, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    serverTimestamp,
+    setDoc,
+    where,
+} from "firebase/firestore";
 
 // import type { Media } from "@/types/Media";
 import type { UserMedia } from "@/types/UserMedia";
@@ -22,6 +31,15 @@ export class ServiceUserMedia {
         }
 
         return data.data() as UserMedia;
+    }
+
+    // Possible gum fix for loading userProfiles
+    async getByUserId(userId: string): Promise<UserMedia[]> {
+        //https://firebase.google.com/docs/firestore/query-data/queries
+        const q = query(collection(db, "userMedia"), where("userId", "==", userId));
+
+        const data = await getDocs(q);
+        return data.docs.map((doc) => doc.data() as UserMedia);
     }
 
     // Passing merge true makes the document only update the passed fileds

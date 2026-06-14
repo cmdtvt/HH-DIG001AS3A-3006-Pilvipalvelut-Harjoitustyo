@@ -6,18 +6,54 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/services/firebase";
 import router from "@/router";
 
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
+
 const username = ref("");
 const email = ref("");
 const password = ref("");
 const confirmedPassword = ref("");
 
 const handleRegister = async () => {
-    if (password.value == confirmedPassword.value) {
-        serviceUser.register({
+    if (password.value !== confirmedPassword.value) {
+        toast.add({
+            severity: "warn",
+            summary: "Virhe",
+            detail: "Salasanat eivät täsmää",
+            life: 3000,
+        });
+        return;
+    }
+
+    try {
+        const user = await serviceUser.register({
             username: username.value,
             email: email.value,
             password: password.value,
             role: "User",
+        });
+
+        toast.add({
+            severity: "success",
+            summary: "Onnistui",
+            detail: "Tili luotu",
+            life: 3000,
+        });
+
+        await router.push(`/profile/${user.id}`);
+
+        // username.value = "";
+        // email.value = "";
+        // password.value = "";
+        // confirmedPassword.value = "";
+    } catch (error) {
+        console.error(error);
+
+        toast.add({
+            severity: "error",
+            summary: "Rekisteröinti epäonnistui",
+            detail: "Tilin luonti epäonnistui",
+            life: 5000,
         });
     }
 };
@@ -35,11 +71,21 @@ const handleLogin = async () => {
             loginPassword.value,
         );
 
-        console.log("Logged in:", credential.user);
+        toast.add({
+            severity: "success",
+            summary: "Kirjautuminen onnistui",
+            detail: `Tervetuloa ${credential.user.email}`,
+            life: 3000,
+        });
 
         await router.push(`/profile/${credential.user.uid}`);
     } catch (error) {
-        alert("invaluid password");
+        toast.add({
+            severity: "error",
+            summary: "Kirjautuminen epäonnistui",
+            detail: "Virheellinen sähköposti tai salasana",
+            life: 4000,
+        });
     }
 };
 </script>
@@ -130,7 +176,7 @@ const handleLogin = async () => {
                     />
                 </div>
 
-                <Button type="button" label="Register" class="w-full" @click="handleRegister" />
+                <Button type="button" label="Rekisteröidy" class="w-full" @click="handleRegister" />
             </form>
         </section>
     </div>

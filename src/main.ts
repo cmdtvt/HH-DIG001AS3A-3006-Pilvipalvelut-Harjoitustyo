@@ -10,6 +10,8 @@ import PrimeVue from "primevue/config";
 // just custom styling all components can be better in the end
 import Material from "@primeuix/themes/nora";
 
+import { ToastService } from "primevue";
+
 const app = createApp(App);
 
 app.use(PrimeVue, {
@@ -23,7 +25,7 @@ app.use(PrimeVue, {
         },
     },
 });
-
+app.use(ToastService);
 app.use(router);
 
 app.mount("#app");

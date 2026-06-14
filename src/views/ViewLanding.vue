@@ -11,17 +11,17 @@ import DisplayShow from "@/components/DisplayShow.vue";
         </p>
     </section>
 
-    <section class="section">
+    <!-- <section class="section">
         <h2>Uudet sarjat</h2>
-        <!-- <div class="grid grid-auto">
+        <div class="grid grid-auto">
             <DisplayShow />
             <DisplayShow />
             <DisplayShow />
             <DisplayShow />
             <DisplayShow />
             <DisplayShow />
-        </div> -->
-    </section>
+        </div>
+    </section> -->
 </template>
 
 <style lang="css" scoped></style>

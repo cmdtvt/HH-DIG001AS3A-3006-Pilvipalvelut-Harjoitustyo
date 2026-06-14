@@ -8,6 +8,9 @@ import type { UserMedia } from "@/types/UserMedia";
 import { hasAuth } from "@/services/hasAuth";
 const { user } = hasAuth();
 
+import { useToast } from "primevue/usetoast";
+const toast = useToast();
+
 const props = defineProps<{
     show: Media;
 }>();
@@ -20,32 +23,81 @@ const notes = ref("");
 
 const data = ref<UserMedia | null>();
 onMounted(async () => {
-    if (!user.value) return;
+    if (!user.value) {
+        // There is no good verification but lets add these anyway
+        toast.add({
+            severity: "warn",
+            summary: "Kirjaudu sisään",
+            detail: "Seurannan käyttö vaatii kirjautumisen.",
+            life: 3000,
+        });
+        return;
+    }
 
-    data.value = await serviceUserMedia.getById(user.value.uid, props.show.id);
+    try {
+        data.value = await serviceUserMedia.getById(user.value.uid, props.show.id);
 
-    if (!data.value) return;
+        if (!data.value) return;
 
-    status.value = data.value.status;
-    rating.value = data.value.rating;
-    watchedEpisodes.value = data.value.watchedEpisodes ?? null;
-    notes.value = data.value.notes ?? "";
+        status.value = data.value.status;
+        rating.value = data.value.rating;
+        watchedEpisodes.value = data.value.watchedEpisodes ?? null;
+        notes.value = data.value.notes ?? "";
+    } catch (error) {
+        console.error(error);
+
+        toast.add({
+            severity: "error",
+            summary: "Virhe",
+            detail: "Seurantatietojen lataus epäonnistui.",
+            life: 5000,
+        });
+    }
 });
 
 const handleSave = async () => {
-    if (!user.value) return;
+    if (!user.value) {
+        // There is no good verification but lets add these anyway
+        toast.add({
+            severity: "warn",
+            summary: "Kirjaudu sisään",
+            detail: "Tallentaminen vaatii kirjautumisen.",
+            life: 3000,
+        });
+        return;
+    }
 
-    await serviceUserMedia.save({
-        id: `${user.value.uid}_${props.show.id}`,
-        userId: user.value.uid,
-        mediaId: props.show.id,
+    try {
+        await serviceUserMedia.save({
+            id: `${user.value.uid}_${props.show.id}`,
+            userId: user.value.uid,
+            mediaId: props.show.id,
 
-        status: status.value,
+            status: status.value,
 
-        rating: rating.value,
-        watchedEpisodes: watchedEpisodes.value ?? 0,
-        notes: notes.value || "",
-    });
+            rating: rating.value,
+            watchedEpisodes: watchedEpisodes.value ?? 0,
+            notes: notes.value || "",
+        });
+
+        toast.add({
+            severity: "success",
+            summary: "Tallennettu",
+            detail: `${props.show.title} päivitettiin seurantaasi.`,
+            life: 3000,
+        });
+
+        visible.value = false;
+    } catch (error) {
+        console.error(error);
+
+        toast.add({
+            severity: "error",
+            summary: "Tallennus epäonnistui",
+            detail: "Tietoja ei voitu tallentaa.",
+            life: 5000,
+        });
+    }
 };
 </script>
 
