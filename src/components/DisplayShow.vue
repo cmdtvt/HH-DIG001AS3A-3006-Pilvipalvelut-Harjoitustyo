@@ -1,26 +1,42 @@
 <script setup lang="ts">
+import { computed, ref } from "vue";
+import { Skeleton } from "primevue";
 import type { Media } from "@/types/Media";
-import { computed } from "vue";
 import UserUpdateShow from "./UserUpdateShow.vue";
-
-import { hasAuth } from "@/services/hasAuth.ts";
+import { hasAuth } from "@/services/hasAuth";
 const { user } = hasAuth();
 
 const props = defineProps<{
     show: Media;
 }>();
 
-//FIXME: this just does not work at all
+const imageLoaded = ref(false);
+
 const fallbackImage = "https://placehold.co/250";
 const imageSrc = computed(() =>
-    props.show.posterImage?.trim() ? props.show.posterImage : fallbackImage,
+    props.show.posterImage?.trim()
+        ? props.show.posterImage
+        : fallbackImage,
 );
 </script>
 
 <template>
     <div class="CompDisplayShow">
         <div class="image-container">
-            <img :src="imageSrc" alt="poster" />
+
+            <Skeleton
+                v-if="!imageLoaded"
+                width="250px"
+                height="250px"
+            />
+
+            <img
+                :src="imageSrc"
+                alt="Elokuvan tai sarjan posteri"
+                :style="{ display: imageLoaded ? 'block' : 'none' }"
+                @load="imageLoaded = true"
+                @error="imageLoaded = true"
+            />
 
             <p class="overlay-title">
                 {{ props.show.title }}
@@ -37,6 +53,8 @@ const imageSrc = computed(() =>
 <style lang="css" scoped>
 .CompDisplayShow {
     background-color: var(--surface-bg);
+    width: 250px;
+    height: 250px;
     max-width: 250px;
 }
 

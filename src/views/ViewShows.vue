@@ -21,7 +21,7 @@ onMounted(async () => {
     </section>
     <section class="section">
         <h2>Uudet sarjat</h2>
-        <div class="grid grid-auto">
+        <div class="grid grid-auto-centering">
             <DisplayShow v-for="item in data" :show="item" />
         </div>
     </section>

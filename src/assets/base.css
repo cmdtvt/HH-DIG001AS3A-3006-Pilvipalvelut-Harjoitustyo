@@ -105,9 +105,14 @@
 }
 
 .grid-auto {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, 250px);
+    justify-content: start;
 }
 
+.grid-auto-centering {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    justify-items: center;
+}
 .surface {
     background: var(--surface-bg);
     padding: var(--surface-padding);
