@@ -3,14 +3,17 @@ import DisplayShow from "@/components/DisplayShow.vue";
 import { serviceMedia } from "@/services/serviceMedia";
 import { onMounted, ref } from "vue";
 import type { Media } from "@/types/Media";
+import { ProgressSpinner } from "primevue";
 
 import { hasAuth } from "@/services/hasAuth";
 
 const { user } = hasAuth();
 
+const loading = ref(true);
 const data = ref<Media[]>();
 onMounted(async () => {
     data.value = await serviceMedia.getAll();
+    loading.value = false;
 });
 </script>
 
@@ -23,6 +26,7 @@ onMounted(async () => {
         <h2>Uudet sarjat</h2>
         <div class="grid grid-auto-centering">
             <DisplayShow v-for="item in data" :show="item" />
+            <ProgressSpinner v-if="loading"/>
         </div>
     </section>
 </template>

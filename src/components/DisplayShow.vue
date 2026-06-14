@@ -14,21 +14,14 @@ const imageLoaded = ref(false);
 
 const fallbackImage = "https://placehold.co/250";
 const imageSrc = computed(() =>
-    props.show.posterImage?.trim()
-        ? props.show.posterImage
-        : fallbackImage,
+    props.show.posterImage?.trim() ? props.show.posterImage : fallbackImage,
 );
 </script>
 
 <template>
     <div class="CompDisplayShow">
         <div class="image-container">
-
-            <Skeleton
-                v-if="!imageLoaded"
-                width="250px"
-                height="250px"
-            />
+            <Skeleton v-if="!imageLoaded" width="250px" height="250px" />
 
             <img
                 :src="imageSrc"

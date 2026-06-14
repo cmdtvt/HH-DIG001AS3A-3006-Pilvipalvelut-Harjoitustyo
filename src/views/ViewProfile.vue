@@ -6,7 +6,7 @@ import DisplayShow from "@/components/DisplayShow.vue";
 import { serviceUser } from "@/services/serviceUser";
 import type { UserProfile } from "@/types/UserProfile";
 
-import { Textarea, InputText, Button } from "primevue";
+import { Textarea, InputText, Button, Skeleton } from "primevue";
 import { serviceUserMedia } from "@/services/serviceUserMedia";
 import { serviceMedia } from "@/services/serviceMedia";
 import type { Media } from "@/types/Media";
@@ -17,11 +17,13 @@ const uid = route.params.uid as string;
 const editProfileAllow = ref(false);
 const editProfileDisplayName = ref<string | undefined>("");
 const editProfileBio = ref<string | undefined>("");
+const editProfileAvatarImage = ref<string | undefined>("")
 
 const data = ref<UserProfile | null>(null);
 
 onMounted(async () => {
     data.value = await serviceUser.getProfile(uid);
+    editProfileAvatarImage.value = data.value?.avatarImageId
     editProfileDisplayName.value = data.value?.displayName;
     editProfileBio.value = data.value?.bio;
 });
@@ -37,7 +39,7 @@ const handleEditToggle = async () => {
 
             displayName: editProfileDisplayName.value ?? "",
             bio: editProfileBio.value ?? data.value.bio,
-            avatarImageId: data.value.avatarImageId,
+            avatarImageId: editProfileAvatarImage.value,
             favoriteGenres: data.value.favoriteGenres,
             isProfilePublic: data.value.isProfilePublic,
         };
@@ -55,12 +57,39 @@ const handleEditToggle = async () => {
     editProfileAllow.value = !editProfileAllow.value;
 };
 
+// Fetching new random profile image from randomfox api
+// while the image is being fetched display Skeleton loader in the meanwhile
+const loadingImage = ref(false);
+const handleChangeImage = async () => {
+    try {
+        loadingImage.value = true;
+
+        const response = await fetch("https://randomfox.ca/floof/");
+        const fox = await response.json();
+        const img = new Image();
+
+        // There might be better way to handle this using primevue's components but im not sure
+        img.onload = () => {
+            editProfileAvatarImage.value = fox.image;
+            loadingImage.value = false;
+        };
+
+        img.onerror = () => {
+            loadingImage.value = false;
+        };
+        img.src = fox.image;
+
+    } catch (error) {
+        loadingImage.value = false;
+    }
+};
+
+// Code for loading the user's media and displaying it
 const planning = ref<Media[]>([]);
 const watching = ref<Media[]>([]);
 const completed = ref<Media[]>([]);
 const dropped = ref<Media[]>([]);
 
-const shows = ref<Media[]>([]);
 onMounted(async () => {
     const all = await serviceUserMedia.getAll();
 
@@ -93,8 +122,11 @@ onMounted(async () => {
 
 <template>
     <section class="banner">
-        <!-- <img src="https://placehold.co/150" class="profile-image" /> -->
-        <img :src="data?.avatarImageId" class="profile-image" />
+        <div class="profile-image-wrapper">
+            <Skeleton v-if="loadingImage" shape="square" size="150px" class="profile-image"/>
+            <img v-else :src="editProfileAvatarImage" class="profile-image" />
+
+        </div>
     </section>
     <section class="section surface">
         <div>
@@ -108,6 +140,13 @@ onMounted(async () => {
                 <Textarea v-model="editProfileBio" rows="5"></Textarea>
             </template>
         </div>
+
+        <Button
+            v-if="editProfileAllow"
+            label="Hae uusi profiilikuva"
+            severity="secondary"
+            @click="handleChangeImage"
+        />
 
         <Button
             :label="editProfileAllow ? 'Tallenna' : 'Muokkaa'"
@@ -161,9 +200,22 @@ onMounted(async () => {
     );
 }
 
-img {
-    max-width: 150px;
-    max-height: 150px;
+.profile-image {
+    width: 200px;
+    height: 200px;
+    /* max-width: 150px;
+    max-height: 150px; */
+}
+
+.profile-image-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.image-action {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
 Textarea {
