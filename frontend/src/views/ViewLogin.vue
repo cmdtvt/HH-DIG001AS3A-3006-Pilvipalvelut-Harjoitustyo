@@ -91,7 +91,7 @@ const handleLogin = async () => {
 </script>
 
 <template>
-    <div class="flex row gap-lg center align-stretch">
+    <div class="flex row mobile-col gap-lg center align-stretch">
         <section class="section surface">
             <h3>Kirjaudu</h3>
 
@@ -123,7 +123,7 @@ const handleLogin = async () => {
             </form>
         </section>
 
-        <div class="flex center">
+        <div class="flex center" id="tai">
             <p>tai</p>
         </div>
 
@@ -185,5 +185,15 @@ const handleLogin = async () => {
 <style lang="css" scoped>
 section {
     width: 400px;
+    max-width: 100%;
+}
+@media (max-width: 768px) {
+    section {
+        width: 100%;
+    }
+
+    #tai {
+        display: none;
+    }
 }
 </style>

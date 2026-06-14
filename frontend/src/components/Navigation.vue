@@ -103,4 +103,18 @@ button.router-link-active {
     border-bottom: 2px solid white;
     font-weight: bold;
 }
+
+@media (max-width: 768px) {
+    .wrapper {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
 </style>
