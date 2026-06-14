@@ -43,8 +43,8 @@ const handleSave = async () => {
         status: status.value,
 
         rating: rating.value,
-        watchedEpisodes: watchedEpisodes.value ?? undefined,
-        notes: notes.value || undefined,
+        watchedEpisodes: watchedEpisodes.value ?? 0,
+        notes: notes.value || "",
     });
 };
 </script>
