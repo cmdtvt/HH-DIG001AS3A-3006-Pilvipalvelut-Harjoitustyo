@@ -45,74 +45,99 @@ const handleLogin = async () => {
 </script>
 
 <template>
-    <section class="section surface">
-        <h3>Kirjaudu</h3>
+    <div class="flex row gap-lg center align-stretch">
+        <section class="section surface">
+            <h3>Kirjaudu</h3>
 
-        <form class="flex col gap-md">
-            <div class="field">
-                <label for="loginEmail">Email</label>
-                <InputText
-                    id="loginEmail"
-                    v-model="loginEmail"
-                    type="email"
-                    placeholder="Enter email"
-                />
-            </div>
+            <form class="flex col gap-md">
+                <div class="flex col gap-xs">
+                    <label for="loginEmail">Email</label>
+                    <InputText
+                        id="loginEmail"
+                        v-model="loginEmail"
+                        type="email"
+                        placeholder="Enter email"
+                        fluid
+                    />
+                </div>
 
-            <div class="field">
-                <label for="loginPassword">Password</label>
-                <Password
-                    id="loginPassword"
-                    v-model="loginPassword"
-                    :feedback="false"
-                    toggleMask
-                    placeholder="Enter password"
-                />
-            </div>
+                <div class="flex col gap-xs">
+                    <label for="loginPassword">Password</label>
+                    <Password
+                        id="loginPassword"
+                        v-model="loginPassword"
+                        :feedback="false"
+                        placeholder="Enter password"
+                        toggleMask
+                        fluid
+                    />
+                </div>
 
-            <Button type="button" label="Kirjaudu" @click="handleLogin" />
-        </form>
-    </section>
+                <Button type="button" label="Kirjaudu" class="w-full" @click="handleLogin" />
+            </form>
+        </section>
 
-    <section class="section surface">
-        <h3>Rekisteröidy</h3>
+        <div class="flex center">
+            <p>tai</p>
+        </div>
 
-        <form class="flex col gap-md">
-            <div class="field">
-                <label for="username">Username</label>
-                <InputText id="username" v-model="username" placeholder="Enter username" />
-            </div>
+        <section class="section surface">
+            <h3>Rekisteröidy</h3>
 
-            <div class="field">
-                <label for="email">Email</label>
-                <InputText id="email" v-model="email" type="email" placeholder="Enter email" />
-            </div>
+            <form class="flex col gap-md">
+                <div class="flex col gap-xs">
+                    <label for="username">Username</label>
+                    <InputText
+                        id="username"
+                        v-model="username"
+                        placeholder="Enter username"
+                        class="w-full"
+                    />
+                </div>
 
-            <div class="field">
-                <label for="password">Password</label>
-                <Password
-                    id="password"
-                    v-model="password"
-                    :feedback="false"
-                    toggleMask
-                    placeholder="Enter password"
-                />
-            </div>
+                <div class="flex col gap-xs">
+                    <label for="email">Email</label>
+                    <InputText
+                        id="email"
+                        v-model="email"
+                        type="email"
+                        placeholder="Enter email"
+                        class="w-full"
+                    />
+                </div>
 
-            <div class="field">
-                <label for="confirmedPassword">Confirm Password</label>
-                <Password
-                    id="confirmedPassword"
-                    v-model="confirmedPassword"
-                    :feedback="false"
-                    toggleMask
-                    placeholder="Confirm password"
-                />
-            </div>
+                <div class="flex col gap-xs">
+                    <label for="password">Password</label>
+                    <Password
+                        id="password"
+                        v-model="password"
+                        :feedback="false"
+                        placeholder="Enter password"
+                        toggleMask
+                        fluid
+                    />
+                </div>
 
-            <Button type="button" label="Register" @click="handleRegister" />
-        </form>
-    </section>
+                <div class="flex col gap-xs">
+                    <label for="confirmedPassword">Confirm Password</label>
+                    <Password
+                        id="confirmedPassword"
+                        v-model="confirmedPassword"
+                        :feedback="false"
+                        placeholder="Confirm password"
+                        toggleMask
+                        fluid
+                    />
+                </div>
+
+                <Button type="button" label="Register" class="w-full" @click="handleRegister" />
+            </form>
+        </section>
+    </div>
 </template>
 
-<style lang="css" scoped></style>
+<style lang="css" scoped>
+section {
+    width: 400px;
+}
+</style>

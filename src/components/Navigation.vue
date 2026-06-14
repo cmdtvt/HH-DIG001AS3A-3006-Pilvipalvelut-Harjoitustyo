@@ -27,7 +27,7 @@ const handleLogout = async () => {
             <!-- <RouterLink to="/AiringToday">Ohjelma</RouterLink> -->
 
             <RouterLink v-if="user" :to="`/profile/${user.uid}`">Profiili</RouterLink>
-            <Button v-if="user" @click="handleLogout">Kirjaudu ulos</Button>
+            <button v-if="user" @click="handleLogout">Kirjaudu ulos</button>
 
             <RouterLink v-if="!user" to="/login">Kirjaudu tai rekisteröidy</RouterLink>
             <RouterLink to="/admin">Admin</RouterLink>
@@ -67,6 +67,24 @@ const handleLogout = async () => {
 }
 
 .nav-links a.router-link-active {
+    border-bottom: 2px solid white;
+    font-weight: bold;
+}
+
+button {
+    background: none;
+    border: none;
+    color: white;
+    font: inherit;
+    cursor: pointer;
+    padding: 0;
+}
+
+button:hover {
+    color: #d0d0d0;
+}
+
+button.router-link-active {
     border-bottom: 2px solid white;
     font-weight: bold;
 }
